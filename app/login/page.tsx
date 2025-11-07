@@ -2,19 +2,51 @@
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/hooks/useAuth";
+import { UserType } from "@/types/user.type";
 import { Button } from "@/UI/Button";
+import { getTokenFromLocalStorage } from "@/utils/auth";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Login = () => {
   const router = useRouter();
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [logInData, setLogInData] = useState<UserType>({
+    userName: "",
+    password: "",
+  });
+
+  useEffect(() => {
+    const isTokenAvailable = getTokenFromLocalStorage();
+    if (isTokenAvailable) {
+      router.push("/");
+    } else {
+      router.push("/login");
+    }
+  }, []);
+
+  const handleDataChange = (field: keyof UserType, value: string) => {
+    setLogInData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleLogin = async () => {
+    setLoading(true);
+    await login(logInData);
+    setLoading(false);
+    setLogInData({
+      userName: "",
+      password: "",
+    });
+  };
 
   return (
     <div className="flex justify-center items-center py-auto h-[100vh]">
       <div className="py-5 px-7 w-[500px] bg-neutral-800 rounded-lg flex justify-center items-center flex-col space-y-5 max-sm:w-full max-sm:h-screen">
         <h1 className="text-[#f3f4f6] text-3xl font-semibold font-[Roboto]">
-          Sign Up
+          Log In
         </h1>
         <div className="flex flex-col gap-1 w-full">
           <Label htmlFor="username" className="text-white">
@@ -25,6 +57,8 @@ const Login = () => {
             placeholder="Username"
             id="username"
             className="text-white"
+            value={logInData.userName}
+            onChange={(e) => handleDataChange("userName", e.target.value)}
           />
         </div>
         <div className="flex flex-col gap-1 w-full">
@@ -53,12 +87,15 @@ const Login = () => {
             placeholder="Passowrd"
             id="passowrd"
             className="text-white"
+            value={logInData.password}
+            onChange={(e) => handleDataChange("password", e.target.value)}
           />
         </div>
         <Button
           className=" mt-4 rounded-full w-full text-lg font-semibold"
           text="Log In"
-          onClick={() => {}}
+          onClick={() => handleLogin()}
+          loading={loading}
         />
         <div>
           New to our app?{" "}

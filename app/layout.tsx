@@ -1,7 +1,10 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+"use client";
+
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Provider } from "react-redux";
+import { appStore } from "@/store/appStore";
+import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({
   children,
@@ -10,20 +13,29 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
-        rel="stylesheet"
-      ></link>
-      <body className={`antialiased bg-black`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+      <head>
+        <link
+          rel="preconnect"
+          precedence="default"
+          href="https://fonts.googleapis.com"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+          rel="stylesheet"
+        ></link>
+      </head>
+      <body className={`antialiased bg-white dark:bg-neutral-900`}>
+        <Provider store={appStore}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </Provider>
+        <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
       </body>
     </html>
   );

@@ -1,6 +1,8 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/hooks/useAuth";
+import { UserType } from "@/types/user.type";
 import { Button } from "@/UI/Button";
 import { Label } from "@radix-ui/react-label";
 import { useRouter } from "next/navigation";
@@ -8,7 +10,29 @@ import { useState } from "react";
 
 const Signup = () => {
   const router = useRouter();
+  const { signup } = useAuth();
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [userData, setUserData] = useState<UserType>({
+    userName: "",
+    email: "",
+    password: "",
+  });
+
+  const handleUserChange = (field: keyof UserType, value: string) => {
+    setUserData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSignUp = async () => {
+    setLoading(true);
+    await signup(userData);
+    setLoading(false);
+    setUserData({
+      userName: "",
+      email: "",
+      password: "",
+    });
+  };
 
   return (
     <div className="flex justify-center items-center py-auto h-[100vh]">
@@ -25,6 +49,8 @@ const Signup = () => {
             placeholder="Username"
             id="username"
             className="text-white"
+            value={userData.userName}
+            onChange={(e) => handleUserChange("userName", e.target.value)}
           />
         </div>
         <div className="flex flex-col gap-1 w-full">
@@ -36,6 +62,8 @@ const Signup = () => {
             placeholder="Email"
             id="email"
             className="text-white"
+            value={userData.email}
+            onChange={(e) => handleUserChange("email", e.target.value)}
           />
         </div>
         <div className="flex flex-col gap-1 w-full">
@@ -64,12 +92,15 @@ const Signup = () => {
             placeholder="Passowrd"
             id="passowrd"
             className="text-white"
+            value={userData.password}
+            onChange={(e) => handleUserChange("password", e.target.value)}
           />
         </div>
         <Button
           className=" mt-4 rounded-full w-full text-lg font-semibold"
           text="Sign Up"
-          onClick={() => {}}
+          onClick={() => handleSignUp()}
+          loading={loading}
         />
         <div>
           Already have an account?{" "}
