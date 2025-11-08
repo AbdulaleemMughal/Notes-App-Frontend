@@ -1,4 +1,4 @@
-import { Loader2, LogOut, UserPen } from "lucide-react";
+import { Loader2, LogOut, Moon, Sun, UserPen } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   DropdownMenu,
@@ -9,9 +9,11 @@ import {
 } from "./ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
+import { useTheme } from "next-themes";
 
 export const UserDropdown = () => {
   const { logout } = useAuth();
+  const { theme, setTheme } = useTheme();
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleLogout = async () => {
@@ -32,6 +34,14 @@ export const UserDropdown = () => {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        >
+          {theme === "dark" ? <Sun /> : <Moon />}
+          {theme === "dark" ? "Light Mode" : "Dark Mode"}
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer">
           <UserPen /> Edit Profile
         </DropdownMenuItem>

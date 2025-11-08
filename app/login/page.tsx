@@ -7,7 +7,7 @@ import { UserType } from "@/types/user.type";
 import { Button } from "@/UI/Button";
 import { getTokenFromLocalStorage } from "@/utils/auth";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Login = () => {
   const router = useRouter();
@@ -17,6 +17,7 @@ const Login = () => {
   const [logInData, setLogInData] = useState<UserType>({
     userName: "",
     password: "",
+    layout: "grid",
   });
 
   useEffect(() => {
@@ -32,19 +33,24 @@ const Login = () => {
     setLogInData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
     setLoading(true);
     await login(logInData);
     setLoading(false);
     setLogInData({
       userName: "",
       password: "",
+      layout: "grid",
     });
   };
 
   return (
     <div className="flex justify-center items-center py-auto h-[100vh]">
-      <div className="py-5 px-7 w-[500px] bg-neutral-800 rounded-lg flex justify-center items-center flex-col space-y-5 max-sm:w-full max-sm:h-screen">
+      <form
+        onSubmit={handleLogin}
+        className="py-5 px-7 w-[500px] bg-neutral-800 rounded-lg flex justify-center items-center flex-col space-y-5 max-sm:w-full max-sm:h-screen"
+      >
         <h1 className="text-[#f3f4f6] text-3xl font-semibold font-[Roboto]">
           Log In
         </h1>
@@ -92,9 +98,10 @@ const Login = () => {
           />
         </div>
         <Button
-          className=" mt-4 rounded-full w-full text-lg font-semibold"
+          type="submit"
+          className="mt-4 rounded-full w-full text-lg font-semibold"
           text="Log In"
-          onClick={() => handleLogin()}
+          onClick={() => handleLogin}
           loading={loading}
         />
         <div>
@@ -106,7 +113,7 @@ const Login = () => {
             Sign Up
           </span>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

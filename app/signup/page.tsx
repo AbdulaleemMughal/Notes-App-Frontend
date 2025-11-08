@@ -6,7 +6,7 @@ import { UserType } from "@/types/user.type";
 import { Button } from "@/UI/Button";
 import { Label } from "@radix-ui/react-label";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import React, { useState } from "react";
 
 const Signup = () => {
   const router = useRouter();
@@ -17,13 +17,15 @@ const Signup = () => {
     userName: "",
     email: "",
     password: "",
+    layout: "grid",
   });
 
   const handleUserChange = (field: keyof UserType, value: string) => {
     setUserData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSignUp = async () => {
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
     setLoading(true);
     await signup(userData);
     setLoading(false);
@@ -36,7 +38,10 @@ const Signup = () => {
 
   return (
     <div className="flex justify-center items-center py-auto h-[100vh]">
-      <div className="py-5 px-7 w-[500px] bg-neutral-800 rounded-lg flex justify-center items-center flex-col space-y-5 max-sm:w-full max-sm:h-screen">
+      <form
+        onSubmit={handleSignUp}
+        className="py-5 px-7 w-[500px] bg-neutral-800 rounded-lg flex justify-center items-center flex-col space-y-5 max-sm:w-full max-sm:h-screen"
+      >
         <h1 className="text-[#f3f4f6] text-3xl font-semibold font-[Roboto]">
           Sign Up
         </h1>
@@ -97,9 +102,10 @@ const Signup = () => {
           />
         </div>
         <Button
+          type="submit"
           className=" mt-4 rounded-full w-full text-lg font-semibold"
           text="Sign Up"
-          onClick={() => handleSignUp()}
+          onClick={() => handleSignUp}
           loading={loading}
         />
         <div>
@@ -111,7 +117,7 @@ const Signup = () => {
             Log In
           </span>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
