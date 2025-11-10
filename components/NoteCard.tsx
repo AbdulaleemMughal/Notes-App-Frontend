@@ -1,14 +1,22 @@
 import { NoteType } from "@/types/note.type";
 import { Star } from "lucide-react";
 import dateFormat from "dateformat";
+import { useRouter } from "next/navigation";
 
 type NoteCardProps = {
   data: NoteType;
 };
 
 export const NoteCard = ({ data }: NoteCardProps) => {
+  const router = useRouter();
+
   return (
-    <div className="col-span-3 shadow-[0_3px_2px_rgba(255,223,186,0.5)] px-6 py-5 rounded-lg cursor-pointer bg-neutral-800 max-lg:col-span-4 max-sm:col-span-6 max-sm:px-3 max-sm:py-2">
+    <div
+      onClick={() => {
+        router.push(`/note/${data._id}`);
+      }}
+      className="col-span-3 shadow-[0_3px_2px_rgba(255,223,186,0.5)] px-6 py-5 rounded-lg cursor-pointer bg-neutral-800 max-lg:col-span-4 max-sm:col-span-6 max-sm:px-3 max-sm:py-2"
+    >
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold text-neutral-200 max-lg:text-xl max-md:text-lg">
           {data.title.length > 20

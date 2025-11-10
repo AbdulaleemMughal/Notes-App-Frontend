@@ -8,7 +8,7 @@ import {
 import { axiosInstance } from "@/utils/axiosInstance";
 import axios, { isAxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 
@@ -46,16 +46,14 @@ export const useAuth = () => {
 
   const logout = useCallback(async () => {
     try {
-
-        await axios.post(BASE_URL + '/logout');
-        dispatch(removeUser());
-        removeTokenFromLocalStorage();
-        router.push("/login");
-        
+      await axios.post(BASE_URL + "/logout");
+      dispatch(removeUser());
+      removeTokenFromLocalStorage();
+      router.push("/login");
     } catch (err) {
-        if (isAxiosError(err)) {
+      if (isAxiosError(err)) {
         toast.error(err.response?.data.message);
-        router.push('/')
+        router.push("/");
       }
     }
   }, []);
@@ -64,6 +62,7 @@ export const useAuth = () => {
     try {
       const res = await axiosInstance.get("/getProfile");
       dispatch(addUser(res.data.user));
+      return res.data.user;
     } catch (err) {
       if (isAxiosError(err)) {
         removeTokenFromLocalStorage();
@@ -74,10 +73,24 @@ export const useAuth = () => {
     }
   }, []);
 
+  const updateProfile = useCallback(async (data: UserType) => {
+    try {
+      const res = await axiosInstance.patch("/update-user", data);
+      dispatch(addUser(res.data.user));
+      toast.success(res.data.message);
+      router.push("/");
+    } catch (err) {
+      if (isAxiosError(err)) {
+        toast.error(err.response?.data.message);
+      }
+    }
+  }, []);
+
   return {
     login,
     signup,
     getProfile,
-    logout
+    logout,
+    updateProfile,
   };
 };

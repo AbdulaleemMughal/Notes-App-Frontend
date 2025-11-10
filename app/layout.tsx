@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Provider } from "react-redux";
 import { appStore } from "@/store/appStore";
 import { Toaster } from "react-hot-toast";
+import { Header } from "@/components/Header";
 
 export default function RootLayout({
   children,
@@ -32,6 +33,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <Header />
             {children}
           </ThemeProvider>
         </Provider>

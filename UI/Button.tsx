@@ -6,6 +6,7 @@ interface ButtonProps {
   onClick: () => void;
   className?: string;
   loading?: boolean;
+  loadingIconSize?: number;
 }
 
 export const Button = ({
@@ -14,6 +15,7 @@ export const Button = ({
   className,
   onClick,
   loading,
+  loadingIconSize,
 }: ButtonProps) => {
   return (
     <button
@@ -24,7 +26,11 @@ export const Button = ({
       }`}
       onClick={onClick}
     >
-      {loading ? <Loader2 className="animate-spin" size={33} /> : text}
+      {loading ? (
+        <Loader2 className="animate-spin" size={loadingIconSize || 33} />
+      ) : (
+        text
+      )}
     </button>
   );
 };

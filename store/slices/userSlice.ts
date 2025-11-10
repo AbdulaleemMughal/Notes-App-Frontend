@@ -3,9 +3,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type UserState = {
   user: UserType | null;
+  isLoading: boolean;
 };
 const initialState: UserState = {
   user: null,
+  isLoading: true,
 };
 
 const userSlice = createSlice({
@@ -14,9 +16,12 @@ const userSlice = createSlice({
   reducers: {
     addUser: (state, action: PayloadAction<UserType>) => {
       state.user = action.payload;
+      state.isLoading = false;
     },
     removeUser: (state, action: PayloadAction) => {
       state.user = null;
+      state.isLoading = false;
+
     },
   },
 });

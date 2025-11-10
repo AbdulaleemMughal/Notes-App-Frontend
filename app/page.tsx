@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/appStore";
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { Header } from "@/components/Header";
 import { AddNoteButton } from "@/UI/AddNoteButton";
 import { Badge } from "@/components/ui/badge";
 import { MoveDown } from "lucide-react";
@@ -13,12 +12,15 @@ import { LayoutDropdown } from "@/components/LayoutDropdown";
 import { NoteCard } from "@/components/NoteCard";
 import { useNote } from "@/hooks/useNote";
 import { Skeleton } from "@/components/ui/skeleton";
+import Loader from "@/assets/loader/Spin@1x-1.0s-200px-200px.svg";
+import Image from "next/image";
 
 export default function Home() {
   const router = useRouter();
   const { getProfile } = useAuth();
   const { notes, getNotes } = useNote();
   const isUserLoggedIn = useSelector((store: RootState) => store.user.user);
+  const isLoading = useSelector((store: RootState) => store.user.isLoading);
 
   useEffect(() => {
     getNotes();
@@ -33,17 +35,31 @@ export default function Home() {
     })();
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Image src={Loader} alt="Loading..." className="w-20" />
+      </div>
+    );
+  }
+
   return (
     <div className="relative">
-      <Header />
       <AddNoteButton
         onClick={async () => {
           await getNotes();
         }}
       />
       <div className="mt-5 px-16 flex justify-between items-center max-sm:px-2">
-        <h1 className="text-2xl font-bold max-lg:text-xl max-md:text-lg">
-          Welcome, {isUserLoggedIn?.userName}
+        <h1 className="text-2xl font-bold flex items-center gap-2 max-lg:text-xl max-md:text-lg">
+          Welcome,{" "}
+          <span>
+            {!isUserLoggedIn?.userName ? (
+              <Skeleton className="w-16 h-7" />
+            ) : (
+              isUserLoggedIn?.userName
+            )}
+          </span>
         </h1>
         <div className="flex items-center space-x-4 max-sm:flex-col max-sm:gap-2">
           <Badge
@@ -55,7 +71,7 @@ export default function Home() {
           <LayoutDropdown />
         </div>
       </div>
-      {notes.length === 0 ? (
+      {/* {notes.length <== 0 ? (
         <div className="mt-5 px-16 grid grid-cols-12 gap-7 max-sm:px-2 max-sm:gap-3">
           {Array.from({ length: 8 }).map((_, idx) => (
             <div className="col-span-3 max-lg:col-span-4 max-sm:col-span-6">
@@ -63,13 +79,14 @@ export default function Home() {
             </div>
           ))}
         </div>
-      ) : (
-        <div className="mt-5 px-16 grid grid-cols-12 gap-7 max-sm:px-2 max-sm:gap-3">
-          {notes.map((note) => {
+      ) : ( */}
+      <div className="mt-5 px-16 grid grid-cols-12 gap-7 max-sm:px-2 max-sm:gap-3">
+        {notes &&
+          notes.map((note) => {
             return <NoteCard key={note._id} data={note} />;
           })}
-        </div>
-      )}
+      </div>
+      {/* )} */}
     </div>
   );
 }

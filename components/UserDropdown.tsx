@@ -10,9 +10,15 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 
-export const UserDropdown = () => {
+type UserDropdownProps = {
+  img: string | undefined;
+};
+
+export const UserDropdown = ({ img }: UserDropdownProps) => {
   const { logout } = useAuth();
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -26,10 +32,7 @@ export const UserDropdown = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="cursor-pointer">
-          <AvatarImage
-            src="https://github.com/shadcn.png"
-            alt="@shadcn"
-          ></AvatarImage>
+          <AvatarImage src={img} alt="@shadcn"></AvatarImage>
           <AvatarFallback>User Image</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
@@ -42,7 +45,10 @@ export const UserDropdown = () => {
           {theme === "dark" ? "Light Mode" : "Dark Mode"}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer">
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={() => router.push("/update-profile")}
+        >
           <UserPen /> Edit Profile
         </DropdownMenuItem>
         <DropdownMenuSeparator />
