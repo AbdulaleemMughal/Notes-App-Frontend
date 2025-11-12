@@ -8,8 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { UserType } from "@/types/user.type";
 import { Button } from "@/UI/Button";
-import { Pencil } from "lucide-react";
-import { INFINITE_CACHE } from "next/dist/lib/constants";
+import { Loader, Pencil } from "lucide-react";
 
 const genders = [
   {
@@ -32,20 +31,31 @@ const genders = [
 const UpdateProfile = () => {
   const imageRef = useRef<HTMLInputElement | null>(null);
   const { getProfile, logout, updateProfile } = useAuth();
+  const [userLoadng, setUserLoading] = useState<boolean>(false);
   const [saveLoading, setSaveLoading] = useState<boolean>(false);
   const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
   const [user, setUser] = useState<UserType>({} as UserType);
 
   useEffect(() => {
     (async () => {
+      setUserLoading(true);
       const loggedInUser = await getProfile();
       setUser(loggedInUser);
+      setUserLoading(false);
     })();
   }, []);
 
   const handleDataChange = (field: keyof UserType, value: string) => {
     setUser((prev) => ({ ...prev, [field]: value }));
   };
+
+  if (userLoadng) {
+    return (
+      <div className="flex justify-center mt-10">
+        <Loader className="animate-spin" size={50} color="#ff6608" />
+      </div>
+    );
+  }
 
   return (
     <div className="w-[500px] flex flex-col mx-auto max-sm:w-full max-sm:px-5 max-sm:pb-5">

@@ -1,7 +1,9 @@
 import { NoteType } from "@/types/note.type";
-import { Star } from "lucide-react";
+import { Loader2, Star } from "lucide-react";
 import dateFormat from "dateformat";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useNote } from "@/hooks/useNote";
 
 type NoteCardProps = {
   data: NoteType;
@@ -9,6 +11,16 @@ type NoteCardProps = {
 
 export const NoteCard = ({ data }: NoteCardProps) => {
   const router = useRouter();
+  const { updateNote } = useNote();
+  const [starLoading, setStarLoading] = useState<string>("");
+  const [note, setNote] = useState<NoteType>(data);
+
+  const handleUpdateNote = async () => {
+    setStarLoading(data._id as string);
+    setNote((prev) => ({ ...prev, isFavourite: !note.isFavourite }));
+    await updateNote(note._id as string, note);
+    setStarLoading("");
+  };
 
   return (
     <div
@@ -23,12 +35,24 @@ export const NoteCard = ({ data }: NoteCardProps) => {
             ? data.title.slice(0, 20) + "..."
             : data.title}
         </h1>
-        <span className="pl-2">
-          <Star
-            fill={data.isFavourite ? "red" : "none"}
-            strokeWidth={data.isFavourite ? "0px" : "1px"}
-          />
-        </span>
+        {starLoading === data._id ? (
+          <span className="pl-2 cursor-not-allowed">
+            <Loader2 className="animate-spin" />
+          </span>
+        ) : (
+          <span
+            className="pl-2"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleUpdateNote();
+            }}
+          >
+            <Star
+              fill={data.isFavourite ? "red" : "none"}
+              strokeWidth={data.isFavourite ? "0px" : "1px"}
+            />
+          </span>
+        )}
       </div>
       <p className="mt-3 text-sm text-neutral-400">
         {data.description.length > 20
