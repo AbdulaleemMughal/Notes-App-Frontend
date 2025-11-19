@@ -4,14 +4,19 @@ import { UserDropdown } from "./UserDropdown";
 import { Input } from "./ui/input";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/appStore";
+import { useRouter } from "next/navigation";
 
 export const Header = () => {
+  const router = useRouter();
   const isUserLoggedIn = useSelector((store: RootState) => store.user.user);
 
   return (
     <header className="py-3 px-16 bg-white border-b border-gray-200 dark:bg-neutral-800 dark:border-none max-sm:w-screen max-sm:px-2">
       <div className="flex justify-between items-center">
-        <div className="flex items-center space-x-2">
+        <div
+          className="flex items-center space-x-2 cursor-pointer"
+          onClick={() => router.push("/")}
+        >
           <span>
             <NotebookPen size={45} color="#8f32ec" />
           </span>

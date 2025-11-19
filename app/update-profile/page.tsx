@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { UserType } from "@/types/user.type";
 import { Button } from "@/UI/Button";
 import { Loader, Pencil } from "lucide-react";
+import { format } from "path";
 
 const genders = [
   {
@@ -45,8 +46,24 @@ const UpdateProfile = () => {
     })();
   }, []);
 
-  const handleDataChange = (field: keyof UserType, value: string) => {
+  const handleDataChange = (field: keyof UserType, value: string | File) => {
     setUser((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleUpdateProfile = async () => {
+    setSaveLoading(true);
+    const formData = new FormData();
+    formData.append("userName", user.userName);
+    if (user.email) formData.append("email", user.email);
+    if (user.gender) formData.append("gender", user.gender);
+    if (user.aboutYourself)
+      formData.append("aboutYourself", user.aboutYourself);
+    if (user.image && user.image instanceof File) {
+      formData.append("image", user.image);
+    }
+
+    await updateProfile(formData);
+    setSaveLoading(false);
   };
 
   if (userLoadng) {
@@ -77,7 +94,14 @@ const UpdateProfile = () => {
           >
             <Pencil size={20} />
           </span>
-          <input ref={imageRef} type="file" className="hidden" />
+          <input
+            ref={imageRef}
+            type="file"
+            className="hidden"
+            onChange={(e) =>
+              handleDataChange("image", e.target.files?.[0] as File)
+            }
+          />
         </div>
         <div className="w-full">
           <Label className="mb-1" htmlFor="username">
@@ -130,20 +154,16 @@ const UpdateProfile = () => {
           type="button"
           loading={saveLoading}
           text="Save Changes"
-          className="rounded-[8px] px-5"
+          className="rounded-xl px-5"
           loadingIconSize={27}
-          onClick={async () => {
-            setSaveLoading(true);
-            await updateProfile(user);
-            setSaveLoading(false);
-          }}
+          onClick={() => handleUpdateProfile()}
         />
         <Button
           type="button"
           text="Logout"
           loading={logoutLoading}
           loadingIconSize={27}
-          className="rounded-[8px] px-5 bg-transparent border border-gray-600"
+          className="rounded-xl px-5 bg-transparent border border-gray-600"
           onClick={async () => {
             setLogoutLoading(true);
             await logout();

@@ -13,7 +13,7 @@ import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 
 type UserDropdownProps = {
-  img: string | undefined;
+  img: string | File | undefined;
 };
 
 export const UserDropdown = ({ img }: UserDropdownProps) => {

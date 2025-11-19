@@ -73,12 +73,12 @@ export const useAuth = () => {
     }
   }, []);
 
-  const updateProfile = useCallback(async (data: UserType) => {
+  const updateProfile = useCallback(async (data: FormData) => {
     try {
       const res = await axiosInstance.patch("/update-user", data);
       dispatch(addUser(res.data.user));
       toast.success(res.data.message);
-      router.push("/");
+      // router.push("/");
     } catch (err) {
       if (isAxiosError(err)) {
         toast.error(err.response?.data.message);

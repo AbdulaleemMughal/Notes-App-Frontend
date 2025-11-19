@@ -5,7 +5,7 @@ export interface UserType {
     password?: string;
     layout?: string;
     gender?: string;
-    image?: string;
+    image?: File | string;
     aboutYourself?: string;
     createdAt?: string;
     updatedAt?: string;
