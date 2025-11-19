@@ -9,7 +9,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { UserType } from "@/types/user.type";
 import { Button } from "@/UI/Button";
 import { Loader, Pencil } from "lucide-react";
-import { format } from "path";
 
 const genders = [
   {

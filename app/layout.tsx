@@ -6,7 +6,6 @@ import { Provider } from "react-redux";
 import { appStore } from "@/store/appStore";
 import { Toaster } from "react-hot-toast";
 import { Header } from "@/components/Header";
-import { Helmet, HelmetProvider } from "react-helmet-async";
 
 export default function RootLayout({
   children,
@@ -27,21 +26,18 @@ export default function RootLayout({
         ></link>
       </head>
       <body className={`antialiased bg-[#f3f4f6] dark:bg-neutral-900`}>
-        <HelmetProvider>
-          <Provider store={appStore}>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <title>Note Taking App</title>
-              <Header />
-              {children}
-            </ThemeProvider>
-          </Provider>
-          <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
-        </HelmetProvider>
+        <Provider store={appStore}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Header />
+            {children}
+          </ThemeProvider>
+        </Provider>
+        <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
       </body>
     </html>
   );
